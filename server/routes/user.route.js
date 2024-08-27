@@ -2,7 +2,8 @@ const express = require("express");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const UserModel = require("../models/user.model");
+const UserModel = require("../models/User.model");
+
 
 const UserRouter = express.Router();
 
@@ -37,7 +38,7 @@ UserRouter.post("/register", async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .send({ message: `Wrong Details try again: ${error.message}` });
+      .send({ message: `Error occured: ${error.message}` });
   }
 });
 
