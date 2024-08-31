@@ -10,12 +10,26 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
   Text,
 } from "@chakra-ui/react";
 import { ChevronUpIcon, ChevronDownIcon, SearchIcon } from "@chakra-ui/icons";
 import { IoMdHeartEmpty } from "react-icons/io";
+import { RxAvatar } from "react-icons/rx";
 import { SlHandbag } from "react-icons/sl";
+import { FaRegBell } from "react-icons/fa";
+import { MdCardGiftcard } from "react-icons/md";
+import { TbCoinRupee } from "react-icons/tb";
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Signup from "../../pages/Signup";
 
 const categories = [
   {
@@ -280,7 +294,24 @@ const brands = [
 const Header = () => {
   const [activeCategory, setActiveCategory] = useState(categories[0]);
 
-  
+  const { isLogin } = useSelector((state) => state.loginState);
+  const handleNavigation = useNavigate();
+
+  const data = JSON.parse(localStorage.getItem("user"));
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
+
+  const handleClick = (elem) => {
+    const category = elem;
+    handleNavigation(`/products`);
+    handleNavigation(
+      `/products?category=${category.replace(" & ", "%20%26%20")}`
+    );
+    onclose();
+  };
 
   return (
     <Box display={"flex"} flexDirection={{ base: "column", lg: "row" }}>
@@ -295,11 +326,13 @@ const Header = () => {
         display="flex"
         alignItems="center"
       >
-        <Image
-          boxSize={{ base: "50px", lg: "70px" }}
-          src="https://www.tatacliq.com/src/general/components/img/group.svg"
-          alt="Logo"
-        />
+        <Link to={"/"}>
+          <Image
+            boxSize={{ base: "50px", lg: "70px" }}
+            src="https://www.tatacliq.com/src/general/components/img/group.svg"
+            alt="Logo"
+          />
+        </Link>
       </Box>
 
       <Box w={"100%"}>
@@ -339,9 +372,91 @@ const Header = () => {
             <Text color={"white"} _hover={{ cursor: "pointer" }}>
               Track Orders
             </Text>
-            <Text color={"white"} _hover={{ cursor: "pointer" }}>
-              Sign in/Sign Up
-            </Text>
+
+            <Popover trigger="hover">
+              {isLogin || data?.isAuth ? (
+                <Box
+                  role="button"
+                  onClick={handleLogout}
+                  color={"black"}
+                  w="100px"
+                  bg="white"
+                  textAlign={"center"}
+                  borderRadius={"3xl"}
+                  children="Logout"
+                />
+              ) : (
+                <PopoverTrigger>
+                  <Box
+                    role="button"
+                    color={"white"}
+                    w="120px"
+                    bg="black"
+                    children="Sign in/Sign Up"
+                  />
+                </PopoverTrigger>
+              )}
+              <PopoverContent alignItems={"center"} w={"220px"}>
+                <PopoverArrow />
+                <Button
+                  bg={"red"}
+                  color={"white"}
+                  borderRadius={"3xl"}
+                  my={"15px"}
+                >
+                  <Signup />
+                </Button>
+
+                <PopoverHeader>
+                  <Link>
+                    <Flex gap={2} alignItems={"center"}>
+                      <RxAvatar size={"20px"} />
+                      My Account
+                    </Flex>
+                  </Link>
+                </PopoverHeader>
+                <PopoverHeader>
+                  <Link>
+                    <Flex gap={2} alignItems={"center"}>
+                      <SlHandbag size={"20px"} />
+                      Order History
+                    </Flex>
+                  </Link>
+                </PopoverHeader>
+                <PopoverHeader>
+                  <Link>
+                    <Flex gap={2} alignItems={"center"}>
+                      <IoMdHeartEmpty size={"20px"} />
+                      My Wishlist
+                    </Flex>
+                  </Link>
+                </PopoverHeader>
+                <PopoverHeader>
+                  <Link>
+                    <Flex gap={2} alignItems={"center"}>
+                      <FaRegBell size={"20px"} />
+                      Alerts & Coupons
+                    </Flex>
+                  </Link>
+                </PopoverHeader>
+                <PopoverHeader>
+                  <Link>
+                    <Flex gap={2} alignItems={"center"}>
+                      <MdCardGiftcard size={"20px"} />
+                      Gift Card
+                    </Flex>
+                  </Link>
+                </PopoverHeader>
+                <PopoverHeader>
+                  <Link>
+                    <Flex gap={2} alignItems={"center"}>
+                      <TbCoinRupee size={"20px"} />
+                      CLiQ Cash
+                    </Flex>
+                  </Link>
+                </PopoverHeader>
+              </PopoverContent>
+            </Popover>
           </Box>
         </Box>
 
@@ -373,7 +488,6 @@ const Header = () => {
                   <Flex flexDirection={{ base: "column", md: "row" }}>
                     <Box
                       width={{ base: "100%", md: "200px" }}
-                      borderRight={{ base: "none", md: "1px solid" }}
                       borderBottom={{ base: "1px solid", md: "none" }}
                       borderColor="gray.200"
                     >
@@ -400,7 +514,13 @@ const Header = () => {
                         flex={1}
                         p={4}
                         w={{ base: "100%", md: "800px" }}
-                        display={{ base: activeCategory.subcategories.length > 0 ? 'block' : 'none', md: "block" }}
+                        display={{
+                          base:
+                            activeCategory.subcategories.length > 0
+                              ? "block"
+                              : "none",
+                          md: "block",
+                        }}
                       >
                         <Flex flexWrap="wrap">
                           {activeCategory.subcategories.map((subcat) => (
@@ -409,13 +529,15 @@ const Header = () => {
                                 {subcat.name}
                               </Text>
                               {subcat.items.map((item) => (
-                                <Text
-                                  key={item}
-                                  fontSize="sm"
-                                  color="gray.600"
-                                >
-                                  {item}
-                                </Text>
+                                <Link to={"/products?category=clothing"}>
+                                  <Text
+                                    key={item}
+                                    fontSize="sm"
+                                    color="gray.600"
+                                  >
+                                    {item}
+                                  </Text>
+                                </Link>
                               ))}
                             </Box>
                           ))}
@@ -447,7 +569,6 @@ const Header = () => {
                   <Flex flexDirection={{ base: "column", md: "row" }}>
                     <Box
                       width={{ base: "100%", md: "200px" }}
-                      borderRight={{ base: "none", md: "1px solid" }}
                       borderBottom={{ base: "1px solid", md: "none" }}
                       borderColor="gray.200"
                     >
@@ -474,7 +595,13 @@ const Header = () => {
                         flex={1}
                         p={4}
                         w={{ base: "100%", md: "800px" }}
-                        display={{ base: activeCategory.subcategories.length > 0 ? 'block' : 'none', md: "block" }}
+                        display={{
+                          base:
+                            activeCategory.subcategories.length > 0
+                              ? "block"
+                              : "none",
+                          md: "block",
+                        }}
                       >
                         <Flex flexWrap="wrap">
                           {activeCategory.subcategories.map((subcat) => (
@@ -483,11 +610,7 @@ const Header = () => {
                                 {subcat.name}
                               </Text>
                               {subcat.items.map((item) => (
-                                <Text
-                                  key={item}
-                                  fontSize="sm"
-                                  color="gray.600"
-                                >
+                                <Text key={item} fontSize="sm" color="gray.600">
                                   {item}
                                 </Text>
                               ))}
@@ -534,11 +657,13 @@ const Header = () => {
             mt={{ base: "10px", md: 0 }}
           >
             <IoMdHeartEmpty color="white" size={"25px"} />
-            <SlHandbag color="white" size={"25px"} />
+            <Link to={"/cart"}>
+              <SlHandbag color="white" size={"25px"} />
+            </Link>
           </Box>
         </Box>
       </Box>
-    </Box>  
+    </Box>
   );
 };
 

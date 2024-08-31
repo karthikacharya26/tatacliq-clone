@@ -2,7 +2,7 @@ import axios from "axios";
 import { LOGIN_NOT, LOGIN_SUCCESS } from "./actionTypes";
 
 export const loginUser = (credentials) => async (dispatch) => {
-  const API_URL = `${import.meta.env.VITE_API_URL}/user/login`;
+  const API_URL = `https://tatacliq-clone-gzf3.onrender.com/user/login`;
 
   try {
     const resp = await axios.post(API_URL, credentials);

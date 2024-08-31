@@ -1,7 +1,8 @@
 import { cartReducer } from "./Cart/reducer";
 import { loadingReducer } from "./Loading/reducer";
 import { loginReducer } from "./Login/reducer";
-import { combineReducers, legacy_createStore } from "redux";
+import { applyMiddleware, combineReducers, legacy_createStore } from "redux";
+import { thunk } from "redux-thunk";
 
 const rootReducer = combineReducers({
     loading: loadingReducer,
@@ -9,4 +10,4 @@ const rootReducer = combineReducers({
     cartData: cartReducer,
 });
 
-export const store = legacy_createStore(rootReducer);
+export const store = legacy_createStore(rootReducer, applyMiddleware(thunk));

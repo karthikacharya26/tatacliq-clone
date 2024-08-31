@@ -3,7 +3,7 @@ import { CARTITEMS } from "./actionTypes";
 import { IS_LOADING, NO_LOADING, ERROR } from "../Loading/actionTypes";
 
 export const getCartItems = async (dispatch) => {
-  const API_URL = `${import.meta.env.VITE_API_URL}/cart`;
+  const API_URL = `https://tatacliq-clone-gzf3.onrender.com/cart`;
   dispatch({ type: IS_LOADING });
 
   try {
