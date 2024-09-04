@@ -133,7 +133,7 @@ const CartPage = () => {
                 <Text>₹{(subtotal + 29).toFixed(2)}</Text>
               </Flex>
 
-              <Text color="green.600">You will save ₹125.00 on this order</Text>
+              <Text color="green.600">You will save ₹150 on this order</Text>
               <Divider />
               <Flex justifyContent="space-between" fontWeight="bold">
                 <Text>Total</Text>
