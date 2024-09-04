@@ -72,15 +72,15 @@ const Section1 = () => {
         style={{ width: "100%", height: "100%" }}
       >
         {cards.map((url, index) => (
-          <Link to="/products?category=clothing">
-            <Box key={index} height="100%">
+          <Box key={index} height="100%">
+            <Link to="/products?category=clothing">
               <img
                 src={url}
                 alt={`Slide ${index}`}
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
-            </Box>
-          </Link>
+            </Link>
+          </Box>
         ))}
       </Slider>
     </Box>

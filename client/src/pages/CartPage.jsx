@@ -32,14 +32,13 @@ const CartPage = () => {
     return acc + price;
   }, 0);
 
-
   const estimatedTax = subtotal * 0.08;
   const estimatedTotal = subtotal + estimatedTax;
 
   return (
     <Box maxWidth="container.xl" margin="auto" p={4}>
       <Text fontSize="2xl" fontWeight="bold" mb={4}>
-        My Bag 
+        My Bag
       </Text>
 
       <Flex bg="blue.50" p={4} borderRadius="md" mb={4} alignItems="center">
@@ -133,7 +132,7 @@ const CartPage = () => {
                 <Text>₹{(subtotal + 29).toFixed(2)}</Text>
               </Flex>
 
-              <Text color="green.600">You will save ₹150 on this order</Text>
+              <Text color="green.600">You will save ₹150.00 on this order</Text>
               <Divider />
               <Flex justifyContent="space-between" fontWeight="bold">
                 <Text>Total</Text>

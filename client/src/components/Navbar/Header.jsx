@@ -529,7 +529,10 @@ const Header = () => {
                                 {subcat.name}
                               </Text>
                               {subcat.items.map((item) => (
-                                <Link to={"/products?category=clothing"}>
+                                <Link
+                                  to={"/products?category=clothing"}
+                                  key={item}
+                                >
                                   <Text
                                     key={item}
                                     fontSize="sm"
