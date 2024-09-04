@@ -1,197 +1,153 @@
+import React, { useEffect, useState } from "react";
 import {
-    Box,
-    Button,
-    Divider,
-    Flex,
-    Heading,
-    Img,
-    SimpleGrid,
-    Text,
-    Spinner,
-  } from "@chakra-ui/react";
-  
-  import Navbar from "../components/Navbar";
-  import Footer from "../components/Footer";
-  import { useEffect, useState } from "react";
-  import { useDispatch, useSelector } from "react-redux";
-  import { getCartItems } from "../redux/Cart/actions";
-  import { Link } from "react-router-dom";
-  import GetSinglePro from "../components/GetSinglePro";
-  import loader from "../assets/loader.gif"
-  import axios from "axios";
-  
-  const CartPage = () => {
-    const dispatch = useDispatch();
-    const data = useSelector((state) => state.cartData);
-    const { loading } = useSelector((state) => state.loading);
-    const [allProducts, setAllProducts] = useState([]);
-  
-    useEffect(() => {
-      dispatch(getCartItems);
-    }, [dispatch]);
-  
-    const subtotal = allProducts.reduce((acc, item) => {
-      const price = parseFloat(item.price) || 0;
-      return acc + price;
-    }, 0);
-  
-    const estimatedTax = subtotal * 0.08;
-    const estimatedTotal = subtotal + estimatedTax;
-  
-    const handleCheckout = async () => {
-      const { token } = JSON.parse(localStorage.getItem("user"));
-      try {
-        await Promise.all(
-          data?.map(async (el) => {
-            await axios.delete(
-              `https://tatacliq-clone-gzf3.onrender.com/cart/remove/${el.productId}`,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-          })
-        );
-  
-        window.location.reload();
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-  
-    useEffect(() => {
-      window.scroll({
-        top: 0,
-        behavior: "instant",
-      });
-    }, []);
-  
-    return (
-      <Box>
-        <Navbar />
-        <Box p={[5, 5, 10, 20]} pt={[5, 5, 5, 5]}>
-          <Heading fontSize="24px" fontWeight={700}>
-            Shipping and Delivery Basket ({data.length})
-          </Heading>
-  
-          <SimpleGrid
-            gridTemplateColumns={[
-              "repeat(1,1fr)",
-              "repeat(1,1fr)",
-              "2fr 1fr",
-              "2fr 1fr",
-            ]}
-            alignItems={"start"}
-          >
-            <SimpleGrid gap={2}>
-              {loading ? (
-                <Flex justifyContent="center" alignItems="center" minH="50vh">
-                  <Img
-                    src={loader}
-                    alt={<Spinner />}
-                  />
-                </Flex>
-              ) : data && data.length > 0 ? (
-                data.map((elem, i) => (
-                  <GetSinglePro
-                    singleData={elem}
-                    key={i}
-                    setAllProducts={setAllProducts}
-                    allProducts={allProducts}
-                  />
-                ))
-              ) : (
-                <Box mt={5}>
-                  <Divider mb={10} bg={"grey"} h={0.8} />
-  
-                  <Text fontSize={"18px"} fontWeight={400} mb={3}>
-                    Your shopping cart is empty. Please add at least one item to
-                    your cart before checking out.
+  Box,
+  Flex,
+  Text,
+  Button,
+  VStack,
+  HStack,
+  Divider,
+  Icon,
+  useDisclosure,
+  Spinner,
+} from "@chakra-ui/react";
+import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { getCartItems } from "../redux/Cart/actions";
+import GetSinglePro from "../components/GetSinglePro";
+
+const CartPage = () => {
+  const dispatch = useDispatch();
+  const cartData = useSelector((state) => state.cartData);
+  const { loading } = useSelector((state) => state.loading);
+  const [allProducts, setAllProducts] = useState([]);
+  const { isOpen: showCoupons, onToggle: toggleCoupons } = useDisclosure();
+
+  useEffect(() => {
+    dispatch(getCartItems);
+  }, [dispatch]);
+
+  const subtotal = allProducts.reduce((acc, item) => {
+    const price = parseFloat(item.price) || 0;
+    return acc + price;
+  }, 0);
+
+
+  const estimatedTax = subtotal * 0.08;
+  const estimatedTotal = subtotal + estimatedTax;
+
+  return (
+    <Box maxWidth="container.xl" margin="auto" p={4}>
+      <Text fontSize="2xl" fontWeight="bold" mb={4}>
+        My Bag 
+      </Text>
+
+      <Flex bg="blue.50" p={4} borderRadius="md" mb={4} alignItems="center">
+        <Text color="blue.700">
+          Some items in your order are eligible for FREE Shipping! Check cart
+          summary for the final amount.
+        </Text>
+      </Flex>
+
+      <Flex flexDirection={{ base: "column", md: "row" }} gap={8}>
+        <VStack flex={2} alignItems="stretch" spacing={4}>
+          {loading ? (
+            <Flex justifyContent="center" alignItems="center" minH="50vh">
+              <Spinner size="xl" />
+            </Flex>
+          ) : cartData && cartData.length > 0 ? (
+            cartData.map((elem, i) => (
+              <GetSinglePro
+                key={i}
+                singleData={elem}
+                setAllProducts={setAllProducts}
+                allProducts={allProducts}
+              />
+            ))
+          ) : (
+            <Box mt={5}>
+              <Divider mb={10} />
+              <Text fontSize="18px" fontWeight={400} mb={3}>
+                Your shopping cart is empty. Please add at least one item to
+                your cart before checking out.
+              </Text>
+              <Button mb={4} colorScheme="black" variant="solid">
+                Continue Shopping
+              </Button>
+              <Divider mt={10} />
+            </Box>
+          )}
+        </VStack>
+
+        <Box flex={1}>
+          <Box borderWidth={1} borderRadius="md" p={4}>
+            <Flex justifyContent="space-between" alignItems="center" mb={4}>
+              <Text fontWeight="semibold">Deliver To</Text>
+              <Button variant="link" color="pink.500">
+                Change
+              </Button>
+            </Flex>
+            <Text mb={4}>110001, Delhi</Text>
+
+            <Button
+              width="full"
+              justifyContent="space-between"
+              alignItems="center"
+              onClick={toggleCoupons}
+              variant="outline"
+              mb={4}
+            >
+              <HStack>
+                <Text>Check for Coupons</Text>
+              </HStack>
+              <Icon as={showCoupons ? ChevronDownIcon : ChevronRightIcon} />
+            </Button>
+
+            <VStack spacing={2} align="stretch">
+              <Flex justifyContent="space-between">
+                <Text>Bag Total</Text>
+                <Text>₹{subtotal.toFixed(2)}</Text>
+              </Flex>
+              <Flex justifyContent="space-between">
+                <Text>Processing Fee</Text>
+                <HStack>
+                  <Text as="s" color="gray.500">
+                    ₹149.50
                   </Text>
-                  <Link to={"/"}>
-                    <Button
-                      mb={4}
-                      _hover={{ color: "white" }}
-                      bg={"black"}
-                      color={"white"}
-                    >
-                      Continue Shopping
-                    </Button>
-                  </Link>
-                  <Divider mb={10} bg={"grey"} h={0.8} />
-                </Box>
-              )}
-            </SimpleGrid>
-  
-            <SimpleGrid gap={8} p={5}>
-              <Box p={4} border={"1px solid rgba(0,0,0,0.3)"}>
-                <Flex gap={"10px"} alignItems={"start"} mb={"12px"}>
-                  <Box w={"30px"}>
-                    <Img
-                      src="https://www.sephora.com/img/ufe/icons/cc-outline.svg"
-                      w={"100%"}
-                    />
-                  </Box>
-                  <Text fontSize={"16px"}>
-                    The Sephora Credit Card Program
-                    <Text fontWeight={400} fontSize={"11px"}>
-                      Save 25% on this order when you open and use either Sephora
-                      Credit Card today
-                    </Text>
-                  </Text>
-                </Flex>
-                <Button
-                  color={"black"}
-                  bgColor={"white"}
-                  border={"1px solid black"}
-                  w={"100%"}
-                  fontWeight={400}
-                >
-                  See Details
-                </Button>
-              </Box>
-  
-              <Box p={4} fontWeight={400} border={"1px solid rgba(0,0,0,0.3)"}>
-                <Flex mb={4} justifyContent={"space-between"}>
-                  <Text>Subtotal</Text>
-                  <Text>₹{subtotal}</Text>
-                </Flex>
-                <Flex mb={3} fontSize={"14px"} justifyContent={"space-between"}>
-                  <Text>Estimated Tax</Text>
-                  <Text>₹{estimatedTax}</Text>
-                </Flex>
-                <Divider mb={3} bg={"grey"} />
-                <Flex
-                  mb={4}
-                  justifyContent={"space-between"}
-                  fontSize={"16px"}
-                  fontWeight={700}
-                >
-                  <Text>Estimated Total</Text>
-                  <Text>₹{estimatedTotal}</Text>
-                </Flex>
-                <Text mb={2} fontSize={"14px"} color={"rgb(112,112,112)"}>
-                  Applicable taxes will be calculated at checkout.
-                </Text>
-                <Button
-                  color={"white"}
-                  _hover={{ color: "white" }}
-                  w={"100%"}
-                  fontWeight={400}
-                  bg={"black"}
-                  onClick={handleCheckout}
-                >
-                  Checkout
-                </Button>
-              </Box>
-            </SimpleGrid>
-          </SimpleGrid>
+                  <Text>₹29.00</Text>
+                </HStack>
+              </Flex>
+              <Flex justifyContent="space-between">
+                <Text>Tax</Text>
+                <HStack>
+                  <Text>0.08%</Text>
+                </HStack>
+              </Flex>
+              <Flex justifyContent="space-between" alignItems="center">
+                <Text>See how this is calculated</Text>
+                <Icon as={ChevronDownIcon} />
+              </Flex>
+              <Divider />
+              <Flex justifyContent="space-between" fontWeight="semibold">
+                <Text>Bag Subtotal</Text>
+                <Text>₹{(subtotal + 29).toFixed(2)}</Text>
+              </Flex>
+
+              <Text color="green.600">You will save ₹125.00 on this order</Text>
+              <Divider />
+              <Flex justifyContent="space-between" fontWeight="bold">
+                <Text>Total</Text>
+                <Text>₹ {estimatedTotal.toFixed(2)}</Text>
+              </Flex>
+              <Button colorScheme="gray" width="full">
+                Checkout
+              </Button>
+            </VStack>
+          </Box>
         </Box>
-        <Footer />
-      </Box>
-    );
-  };
-  
-  export default CartPage;
+      </Flex>
+    </Box>
+  );
+};
+
+export default CartPage;

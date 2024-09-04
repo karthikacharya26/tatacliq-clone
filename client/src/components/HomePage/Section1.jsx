@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Box, IconButton, useBreakpointValue } from "@chakra-ui/react";
 import Slider from "react-slick";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Link } from "react-router-dom";
 
 const Section1 = () => {
   const settings = {
@@ -42,7 +43,7 @@ const Section1 = () => {
         colorScheme="gray"
         borderRadius="full"
         position="absolute"
-        fontSize='30px'
+        fontSize="30px"
         left={side}
         top={top}
         transform={"translate(0%, -50%)"}
@@ -56,7 +57,7 @@ const Section1 = () => {
         colorScheme="gray"
         borderRadius="full"
         position="absolute"
-        fontSize='30px'
+        fontSize="30px"
         right={side}
         top={top}
         transform={"translate(0%, -50%)"}
@@ -68,20 +69,22 @@ const Section1 = () => {
       <Slider
         {...settings}
         ref={(slider) => setSlider(slider)}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
       >
         {cards.map((url, index) => (
-          <Box key={index} height="100%">
-            <img
-              src={url}
-              alt={`Slide ${index}`}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          </Box>
+          <Link to="/products?category=clothing">
+            <Box key={index} height="100%">
+              <img
+                src={url}
+                alt={`Slide ${index}`}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            </Box>
+          </Link>
         ))}
       </Slider>
     </Box>
   );
-}
+};
 
 export default Section1;
