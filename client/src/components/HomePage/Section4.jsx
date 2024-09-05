@@ -50,14 +50,14 @@ const Section4 = () => {
   ];
 
   return (
-    <Box>
+    <Box >
       <Flex justifyContent={"center"} m={"5%"}>
         <Text fontWeight={"bold"} fontSize={"5xl"}>
           Blockbuster Deals
         </Text>
       </Flex>
 
-      <Flex justifyContent={'center'}>
+      <Flex justifyContent={'center'} >
       <SimpleGrid
         spacing={1} // Reduced spacing
         templateColumns={["1fr", "1fr", "repeat(2, 1fr)"]}
@@ -68,6 +68,7 @@ const Section4 = () => {
       >
         {cards.map((ele, i) => (
           <Card
+          bgColor={"#ececec"}
             key={i}
             _hover={{
               cursor: "pointer",
