@@ -328,8 +328,8 @@ const Header = () => {
       >
         <Link to={"/"}>
           <Image
-            boxSize={{ base: "50px", lg: "70px" }}
-            src="https://www.tatacliq.com/src/general/components/img/group.svg"
+            boxSize={{ base: "70px", lg: "150px" }}
+            src="https://www.tatacliq.com/src/general/components/img/TCF_logo.svg"
             alt="Logo"
           />
         </Link>
